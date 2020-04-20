@@ -1,0 +1,63 @@
+name: Deploy
+
+on:
+  - repository_dispatch
+  - push
+  - pull_request
+  - pull_request_review
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup environment variables
+        shell: bash
+        run: |
+          echo ::set-env name=BRANCH::$(echo "${GITHUB_REF##*/}")
+          echo ::set-env name=RELEASE_BRANCH::$(echo "publish")
+          echo ::set-env name=PUBLISH_DIR::$(echo "public")
+          echo ::set-env name=REPOSITORY_NAME::$(echo ${GITHUB_REPOSITORY} | awk -F / '{print $2}')
+          echo ::set-env name=DISCORD_WEBHOOK::${{ secrets.DISCORD_WEBHOOK }}
+      - name: Set deploy domain
+        run: |
+          DOMAIN_BASE="${REPOSITORY_NAME}.jas.bio"
+          if [ $BRANCH == ${RELEASE_BRANCH}"" ];then
+            DOMAIN="https://${DOMAIN_BASE}"
+          elif [ $GITHUB_EVENT_NAME == "pull_request" ];then
+            DOMAIN="http://pr-${{ github.event.number }}.${DOMAIN_BASE}"
+          else
+            DOMAIN="http://${BRANCH}.${DOMAIN_BASE}"
+          fi
+          echo "$DOMAIN"
+          echo ::set-env name=DOMAIN::$(echo "$DOMAIN")
+      - uses: actions/checkout@v2
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+      - name: Pull packages
+        run: yarn
+      - name: Build site
+        run: yarn build
+      - name: Deploying to ${{env.DOMAIN}}
+        run: yarn surge ${PUBLISH_DIR} ${DOMAIN}
+        env:
+          SURGE_LOGIN: ${{secrets.SURGE_LOGIN}}
+          SURGE_TOKEN: ${{secrets.SURGE_TOKEN}}
+      - name: Discord notification
+        if: env.DISCORD_WEBHOOK != ''
+        uses: Ilshidur/action-discord@master
+        with:
+          args: "New deploy ${{env.DOMAIN}} from {{ EVENT_PAYLOAD.repository.full_name }}"
+      - name: Comment link on PR
+        if: github.event_name == 'pull_request'
+        uses: unsplash/comment-on-pr@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          msg: "Deployed commit ${{ github.sha }} at ${{env.DOMAIN}}"
