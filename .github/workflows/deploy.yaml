@@ -21,7 +21,7 @@ jobs:
       - name: Set deploy domain
         run: |
           DOMAIN_BASE="${REPOSITORY_NAME}.jas.bio"
-          if [ $BRANCH == "master" ];then
+          if [ $BRANCH == ${RELEASE_BRANCH}"" ];then
             DOMAIN="https://${DOMAIN_BASE}"
           elif [ $GITHUB_EVENT_NAME == "pull_request" ];then
             DOMAIN="http://pr-${{ github.event.number }}.${DOMAIN_BASE}"
