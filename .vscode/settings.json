@@ -2,5 +2,6 @@
     "github-actions.workflows.pinned.workflows": [
         ".github/workflows/deploy.yaml"
     ],
-    "github-actions.workflows.pinned.refresh.interval": 4
+    "github-actions.workflows.pinned.refresh.interval": 4,
+    "debug.node.autoAttach": "on"
 }

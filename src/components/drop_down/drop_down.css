@@ -1,0 +1,17 @@
+input:focus, textarea:focus, select:focus{
+        outline: none;
+    }
+input {
+  border: 1px solid #975099;
+  border-radius: 5px;
+}
+
+.contBox {
+  width: 400px;
+  height: 70px;
+  background: #fff;
+  border: 2px solid #975099;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+}

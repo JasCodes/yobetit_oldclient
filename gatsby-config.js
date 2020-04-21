@@ -1,10 +1,16 @@
-/**
- * Configure your Gatsby site with this file.
- *
- * See: https://www.gatsbyjs.org/docs/gatsby-config/
- */
-
 module.exports = {
   /* Your site config here */
-  plugins: [],
+  siteMetadata: {
+    title: `Yobetit`,
+    description: ``,
+    author: `@gatsbyjs`,
+  },
+  plugins: [
+    {
+      resolve: "gatsby-plugin-transition-link",
+      options: {
+        layout: require.resolve(`./src/layout/layout.jsx`)
+      }
+    },
+  ],
 }
