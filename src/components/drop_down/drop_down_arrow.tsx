@@ -1,28 +1,27 @@
 import React, { useState, useEffect, SFC } from 'react'
-import './drop_down.css'
 import { gsap } from 'gsap'
+import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
 
 interface ArrowProp {
   open: boolean
 }
 
-const Arrow: SFC<ArrowProp> = props => {
+export const DropDownArrow: SFC<ArrowProp> = props => {
   let arrow
-  let background
+  const store = useDropDownStore()
   useEffect(() => {
-    background = props.open ? '#000' : '#ccc'
+    const background = store.open ? '#000' : '#ccc'
     gsap.to(arrow, 5, { background })
-  }, [props.open])
+  }, [store.open])
+
   return (
     <>
       <div
         ref={e => {
           arrow = e
         }}
-        style={{ width: 50, height: 50, background }}
+        style={{ width: 50, height: 50 }}
       />
     </>
   )
 }
-
-export { Arrow }

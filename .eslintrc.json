@@ -13,10 +13,11 @@
       "jsx": true
     },
     "ecmaVersion": 2018,
-    "sourceType": "module",
-    "project": "tsconfig.json"
+    "sourceType": "module"
+    // "project": "tsconfig.json"
   },
   "plugins": [
+    "import",
     "react",
     "@typescript-eslint",
     "prettier"
@@ -29,6 +30,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "rules": {
+    "import/no-unresolved": "error",
     "import/extensions": [
       "error",
       "ignorePackages",
@@ -39,13 +41,18 @@
         "tsx": "never"
       }
     ],
+    "no-undef": "error",
     "prettier/prettier": "error",
+    "no-restricted-syntax": "off",
+    "no-param-reassign": "off",
     "react/destructuring-assignment": "off",
     "react/prop-types": "off",
     "jsx-a11y/click-events-have-key-events": "off",
     "jsx-a11y/no-static-element-interactions": "off",
+    "jsx-a11y/mouse-events-have-key-events": "off",
     "import/prefer-default-export": "off",
-    "@typescript-eslint/no-unsafe-call": "warn",
+    // "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unsafe-call": "off",
     "@typescript-eslint/member-delimiter-style": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -63,7 +70,17 @@
     ]
   },
   "settings": {
+    "import/parsers": {
+      "@typescript-eslint/parser": [
+        ".ts",
+        ".tsx"
+      ]
+    },
     "import/resolver": {
+      // use <root>/tsconfig.json
+      "typescript": {
+        "alwaysTryTypes": true // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`
+      },
       "node": {
         "extensions": [
           ".js",

@@ -3,10 +3,19 @@ module.exports = {
   siteMetadata: {
     title: `Yobetit`,
     description: ``,
-    author: `@gatsbyjs`,
+    author: `Jaspreet Singh`,
   },
   plugins: [
-    'gatsby-plugin-typescript',
+    {
+      resolve: `gatsby-plugin-typescript`,
+      options: {
+        // isTSX: true, // defaults to false
+        // jsxPragma: `jsx`, // defaults to "React"
+        // allExtensions: true, // defaults to false
+      },
+    },
+    'gatsby-plugin-tsconfig-paths',
+    'gatsby-plugin-linaria',
     {
       resolve: 'gatsby-plugin-transition-link',
       options: {

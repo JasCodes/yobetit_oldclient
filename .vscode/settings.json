@@ -4,6 +4,13 @@
   ],
   "github-actions.workflows.pinned.refresh.interval": 4,
   "debug.node.autoAttach": "on",
+  "typescript.preferences.renameShorthandProperties": false,
+  "javascript.preferences.renameShorthandProperties": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "autoimport.useSemiColon": false,
+  "autoimport.doubleQuotes": false,
+  "autoimport.spaceBetweenBraces": true,
   "editor.formatOnSave": true,
   "eslint.validate": [
     "javascript",

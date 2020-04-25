@@ -1,9 +1,8 @@
 import React, { SFC } from 'react'
 import { useStaticQuery, graphql } from 'gatsby'
 import { TransitionPortal } from 'gatsby-plugin-transition-link'
-
-import './layout.css'
 import { Header } from './header'
+import './layout.css'
 
 interface LayoutProp {
   title: string

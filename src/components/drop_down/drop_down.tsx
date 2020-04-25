@@ -1,26 +1,18 @@
 import React, { useState, SFC } from 'react'
-import './drop_down.css'
-import { Arrow } from './arrow'
+import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
+import { DropDownBar } from '@/components/drop_down/drop_down_bar'
+import { DropDownList } from '@/components/drop_down/drop_down_list'
+import { DropDownSearchInput } from '@/components/drop_down/drop_down_search_input'
 
 interface DropDownProp {}
 
 const DropDown: SFC<DropDownProp> = props => {
-  const [open, setOpen] = useState(false)
-
+  const store = useDropDownStore()
   return (
     <>
-      <div
-        className="contBox"
-        onClick={() => {
-          setOpen(v => !v)
-        }}
-      >
-        <div>F</div>
-        <div style={{ flexGrow: 1 }}>Estonia</div>
-        <div>
-          <Arrow open={open} />
-        </div>
-      </div>
+      <DropDownBar />
+      <DropDownSearchInput />
+      <DropDownList />
     </>
   )
 }
