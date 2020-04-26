@@ -41,10 +41,10 @@ export class DropDownModel {
   mode: 'SERVER' | 'CLIENT' = 'CLIENT'
 
   @observable
-  list: CountryProps[] = [defaultCountry]
+  list: CountryProps[]
 
   @observable
-  filteredList: CountryProps[] = [defaultCountry]
+  filteredList: CountryProps[]
 
   @action
   fetchAllCountriesX = async (sText: string) => {

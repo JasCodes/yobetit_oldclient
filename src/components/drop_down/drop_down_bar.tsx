@@ -3,9 +3,7 @@ import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
 import { DropDownArrow } from '@/components/drop_down/drop_down_arrow'
 import { css } from 'linaria'
 
-interface DropDownBarProp {
-  open: boolean
-}
+interface DropDownBarProp {}
 
 const countryBox = css`
   width: 400px;

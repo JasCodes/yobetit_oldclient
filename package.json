@@ -34,7 +34,8 @@
     "react-easy-flip": "^3.0.0",
     "react-flip-move": "^3.0.4",
     "react-flip-toolkit": "^7.0.9",
-    "react-query": "^1.2.9"
+    "react-query": "^1.2.9",
+    "react-string-replace": "^0.4.4"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.8.3",
