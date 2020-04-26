@@ -11,7 +11,7 @@ interface DropDownListProp {
 }
 
 const bold = css`
-  font-weight: 700;
+  font-weight: 900;
 `
 
 export const DropDownList: FunctionComponent<DropDownListProp> = props => {

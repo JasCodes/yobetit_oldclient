@@ -1,7 +1,0 @@
-input:focus, textarea:focus, select:focus{
-        outline: none;
-    }
-input {
-  border: 1px solid #975099;
-  border-radius: 5px;
-}

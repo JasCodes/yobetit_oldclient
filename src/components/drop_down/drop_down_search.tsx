@@ -17,7 +17,7 @@ const searchInput = css`
   align-items: center;
   outline: none;
 `
-export const DropDownSearchInput: FunctionComponent<DropDownSearchInputProp> = props => {
+export const DropDownSearch: FunctionComponent<DropDownSearchInputProp> = props => {
   const store = useDropDownStore()
   return (
     <div>

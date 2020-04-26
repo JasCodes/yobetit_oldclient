@@ -1,30 +1,45 @@
 import React, { SFC } from 'react'
 import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
-import { DropDownArrow } from '@/components/drop_down/drop_down_arrow'
+import { DropDownBarTrail } from '@/components/drop_down/drop_down_bar_trail'
 import { css } from 'linaria'
+import { DropDownFlag } from '@/components/drop_down/drop_down_flag'
+import { useObserver } from 'mobx-react-lite'
+import { DropDownBarTitle } from '@/components/drop_down/drop_down_bar_title'
 
 interface DropDownBarProp {}
 
-const countryBox = css`
-  width: 400px;
+const container = css`
+  width: 500px;
   height: 70px;
   background: #fff;
   border: 2px solid #975099;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 15px;
   display: flex;
   align-items: center;
 `
+
+const name = css`
+  flex-grow: 1;
+`
 const DropDownBar: SFC<DropDownBarProp> = props => {
   const store = useDropDownStore()
-  return (
-    <div className={countryBox}>
-      <div>{store.selected.name}</div>
-      <div style={{ flexGrow: 1 }}>{store.selected.name}</div>
-      <div>
-        <DropDownArrow />
+  return useObserver(() => (
+    <>
+      <DropDownBarTitle />
+      <div
+        className={container}
+        onClick={e => {
+          e.stopPropagation()
+          store.open = !store.open
+        }}
+      >
+        <DropDownFlag srcFlag={store.selected.flag} />
+        <div className={name}>{store.selected.name}</div>
+        <DropDownBarTrail open={store.open} />
       </div>
-    </div>
-  )
+    </>
+  ))
 }
 
 export { DropDownBar }
