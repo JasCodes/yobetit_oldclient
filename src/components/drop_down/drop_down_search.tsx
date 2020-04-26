@@ -4,24 +4,30 @@ import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
 
 interface DropDownSearchInputProp {}
 
-const searchInput = css`
-  /* border: 1px solid #975099; */
-  /* border-radius: 5px; */
-
-  width: 400px;
-  height: 70px;
-  background: #fff;
-  border: 2px solid #975099;
-  border-radius: 15px;
+const container = css`
   display: flex;
-  align-items: center;
+  height: 70px;
+  margin: 20px 20px 10px 20px;
+  background: #fff;
+  border: 2px solid #f3f3f3;
+  border-radius: 7px;
   outline: none;
+`
+const searchInput = css`
+  ::placeholder {
+    color: #9e9e9e;
+  }
+  border: 0px;
+  outline: none;
+  flex-grow: 1;
+  margin: 0px 24px;
 `
 export const DropDownSearch: FunctionComponent<DropDownSearchInputProp> = props => {
   const store = useDropDownStore()
   return (
-    <div>
+    <div className={container}>
       <input
+        placeholder="Search for your country..."
         className={searchInput}
         onInput={e => {
           store.searchText = e.currentTarget.value

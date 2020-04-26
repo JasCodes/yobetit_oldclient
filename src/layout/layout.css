@@ -6,13 +6,13 @@
   src: url("../fonts/ExpresswayRegular.ttf") format("truetype");
   font-display: swap;
 }
-@font-face {
+/* @font-face {
   font-family: Expressway;
   font-weight: 700;
   font-style: normal;
   src: url("../fonts/ExpresswaySemiBold.ttf") format("truetype");
   font-display: swap;
-}
+} */
 
 @font-face {
   font-family: Expressway;
@@ -21,15 +21,15 @@
   src: url("../fonts/ExpresswayBold.ttf") format("truetype");
   font-display: swap;
 }
-html {
+html,input {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-}
-body {
   font-family: "Expressway", sans-serif;
   font-size: 24px;
   letter-spacing: 1.9px;
   font-weight: 400;
+}
+body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

@@ -5,13 +5,19 @@ import { DropDownList } from '@/components/drop_down/drop_down_list'
 import { Observer, useObserver } from 'mobx-react-lite'
 import { DropDownSearch } from '@/components/drop_down/drop_down_search'
 import { DropDownPanel } from '@/components/drop_down/drop_down_panel'
+import { css } from 'linaria'
 
 interface DropDownProp {}
+
+const container = css`
+  display: flex;
+  flex-direction: column;
+`
 export const DropDown: SFC<DropDownProp> = props => {
   return (
-    <>
+    <div className={container}>
       <DropDownBar />
       <DropDownPanel />
-    </>
+    </div>
   )
 }
