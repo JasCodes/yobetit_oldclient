@@ -1,4 +1,4 @@
-import { observable, action, reaction, toJS } from 'mobx'
+import { observable, action, reaction, toJS, autorun } from 'mobx'
 import axios from 'axios'
 import { Search, AllSubstringsIndexStrategy } from 'js-search'
 // import axiosRetry from 'axios-retry'
@@ -56,19 +56,19 @@ export class DropDownModel {
   filteredList: CountryProp[]
 
   @action
-  fetchAllCountriesX = async (sText: string) => {
+  queryCountries = async (searchText: string) => {
     this.fetching = true
     const { data } = await axios.get<CountryProp[]>(
-      sText === ''
-        ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;altSpellings;alpha2Code;alpha3Code;'
-        : `https://restcountries.eu/rest/v2/name/${sText}?fields=;name;flag;altSpellings;alpha2Code;alpha3Code;`
+      searchText === ''
+        ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;'
+        : `https://restcountries.eu/rest/v2/name/${searchText}?fields=;name;flag;`
     )
     this.filteredList = data
     this.fetching = false
   }
 
   @action
-  fetchAllCountries = async () => {
+  queryOnce = async () => {
     this.fetching = true
     const { data } = await axios.get<CountryProp[]>(
       'https://restcountries.eu/rest/v2/all?fields=;flag;name;altSpellings;alpha3Code;demonym;capital;region;'
@@ -79,18 +79,12 @@ export class DropDownModel {
 
   @action
   clientFilter = (sText: string) => {
-    // if (!sText) {
-    // this.filteredList = this.list
-    // } else {
-    // const result = this.searchEngine.search(sText)
-    // if (result.length > 0) this.filteredList = result
-    // this.filteredList = this.searchEngine.search(sText)
-    // }
     this.filteredList = sText ? this.searchEngine.search(sText) : this.list
   }
 
   searchEngine: Search
 
+  @action
   prefetch = () => {
     this.searchEngine = new Search('alpha3Code')
     this.searchEngine.indexStrategy = new AllSubstringsIndexStrategy()
@@ -107,25 +101,23 @@ export class DropDownModel {
     // this.searchEngine.addIndex('regionalBlocs')
     this.searchEngine.addIndex('region')
     // this.searchEngine.addIndex('subregion')
-    this.fetchAllCountries().then(() => {
+    this.queryOnce().then(() => {
       this.searchEngine.addDocuments(toJS(this.list))
       this.clientFilter()
     })
   }
 
   constructor() {
-    // Only prefetch all data for client side filtering
+    // Only prefetch all data for client side once perload for filtering
     if (this.mode === 'CLIENT') this.prefetch()
-    // update filtered list each time I update
-    reaction(
-      () => this.searchText,
-      sText => {
-        if (this.mode === 'CLIENT') {
-          this.clientFilter(sText)
-        } else {
-          this.fetchAllCountriesX(sText)
-        }
+
+    // observe and update filtered list each time I update
+    autorun(() => {
+      if (this.mode === 'CLIENT') {
+        this.clientFilter(this.searchText)
+      } else {
+        this.queryCountries(this.searchText)
       }
-    )
+    })
   }
 }

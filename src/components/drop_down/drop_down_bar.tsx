@@ -1,4 +1,4 @@
-import React, { SFC, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
 import { DropDownBarTrail } from '@/components/drop_down/drop_down_bar_trail'
 import { css } from 'linaria'
@@ -16,8 +16,7 @@ const bar = css`
   z-index: 100;
   background: #fff;
   border: 2px solid #b91cbf;
-  /* #975099; */
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 0 1px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 15px;
   display: flex;
   align-items: center;
@@ -33,15 +32,23 @@ const flag = css`
 `
 const DropDownBar: SFC<DropDownBarProp> = props => {
   const store = useDropDownStore()
-  // const refBar = useRef<HTMLDivElement>()
-
+  const refBar = useRef<HTMLDivElement>()
+  useEffect(() => {
+    gsap.to(refBar.current, {
+      'box-shadow': store.open
+        ? '0 0 1px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0.2)'
+        : '0 0 0px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0)',
+    })
+    console.log('hi')
+  }, [store.open])
   // useEffect(
   //   () => reaction(() => store.open),
   //   () => {
-  //     gsap(refBar.current, 0.5, {
+  //     console.log(store.open)
+  //     gsap.to(refBar.current, {
   //       'box-shadow': store.open
-  //         ? ''
-  //         : '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+  //         ? 'box-shadow: 0 0 0px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0)'
+  //         : 'box-shadow: 0 0 1px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0.2)',
   //     })
   //   }
   // )
@@ -50,7 +57,7 @@ const DropDownBar: SFC<DropDownBarProp> = props => {
     <>
       <DropDownBarLabel />
       <div
-        // ref={refBar}
+        ref={refBar}
         className={bar}
         onClick={e => {
           e.stopPropagation()

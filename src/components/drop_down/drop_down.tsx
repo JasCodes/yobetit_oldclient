@@ -9,16 +9,17 @@ import { css } from 'linaria'
 
 interface DropDownProp {}
 
-const container = css`
+const dropDown = css`
   display: flex;
   flex-direction: column;
   width: 500px;
 `
+
 export const DropDown: SFC<DropDownProp> = props => {
-  return useObserver(() => (
-    <div className={container}>
+  return (
+    <div className={dropDown}>
       <DropDownBar />
       <DropDownPanel />
     </div>
-  ))
+  )
 }

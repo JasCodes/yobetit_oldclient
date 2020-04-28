@@ -1,35 +1,82 @@
-import React from 'react'
-
+import React, { useRef, useEffect } from 'react'
 import Layout from '@/layout/layout'
 
-import { DropDown } from '@/components/drop_down/drop_down'
+import { gsap } from 'gsap'
 import {
   useDropDownStore,
   DropDownStoreProvider,
 } from '@/components/drop_down/store/drop_down_store'
 import { css } from 'linaria'
+import { DropDown } from '@/components/drop_down/drop_down'
+import Scrollbars from 'react-custom-scrollbars'
+import { autorun, reaction } from 'mobx'
+import { useWindowSize } from '@/hooks/use-window-size'
 
 const container = css`
   background: #fde5fe;
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
+  /* position: absolute; */
 `
 
-const obj = css`
-  margin: auto auto;
+const dropDown = css`
+  /* margin: auto auto; */
+  /* padding-top: 60px; */
+  margin: 0px auto;
 `
+const getTop = (open: boolean, height: number) => {
+  const innerHeight = height - 70
+  const closeHeight = (innerHeight - 80) / 2
+  const openHeight = closeHeight / 2
+  return open ? openHeight : closeHeight
+}
 
 const DropDownContainer = () => {
   const store = useDropDownStore()
+  const size = useWindowSize()
+
+  const refDropDown = useRef<HTMLDivElement>()
+  useEffect(() =>
+    reaction(
+      () => store.open,
+      () => {
+        gsap.to(refDropDown.current, {
+          duration: 1,
+          ease: 'expo',
+          'margin-top': getTop(store.open, size.height),
+        })
+      }
+    )
+  )
+  useEffect(() => {
+    gsap.to(refDropDown.current, {
+      duration: 0,
+      'margin-top': getTop(store.open, size.height),
+    })
+  }, [refDropDown.current, size.height])
+
+  useEffect(() => {
+    gsap.fromTo(
+      refDropDown.current,
+
+      {
+        opacity: 0,
+        'margin-top': getTop(store.open, size.height) - 40,
+      },
+      {
+        opacity: 1,
+        'margin-top': getTop(store.open, size.height),
+        delay: 0.5,
+        duration: 0.6,
+        ease: 'power4',
+      }
+    )
+  }, [])
+
   return (
-    <div
-      className={container}
-      onClick={() => {
-        store.open = false
-      }}
-    >
-      <div className={obj}>
+    <div className={container}>
+      <div ref={refDropDown} className={dropDown}>
         <DropDown />
       </div>
     </div>

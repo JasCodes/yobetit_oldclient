@@ -6,7 +6,6 @@ import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
 import gsap from 'gsap'
 import { useObserver, Observer } from 'mobx-react-lite'
 import ShadowScrollbars from '@/components/shadow_scrollbar'
-import ColoredScrollbars from '@/components/colored_scrollbar'
 import { reaction } from 'mobx'
 
 interface DropDownPanelProp {}
@@ -18,8 +17,9 @@ const panel = css`
   transform: translateY(-10px);
   position: relative;
   margin: 0px 3px;
-  box-shadow: 0 10px 50px 0 rgba(0, 0, 0, 0.1),
-    0 12px 100px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
 `
 const botBlur = css`
   position: absolute;
@@ -34,7 +34,6 @@ const botBlur = css`
     rgba(255, 255, 255, 1) 76%
   );
 `
-const scrollBar = css``
 export const DropDownPanel: FunctionComponent<DropDownPanelProp> = props => {
   const store = useDropDownStore()
   const refPanel = useRef<HTMLDivElement>()
@@ -42,7 +41,11 @@ export const DropDownPanel: FunctionComponent<DropDownPanelProp> = props => {
     reaction(
       () => store.open,
       () => {
-        gsap.to(refPanel.current, 0.5, { height: store.open ? 480 : 0 })
+        gsap.to(refPanel.current, {
+          height: store.open ? 480 : 0,
+          duration: 1,
+          ease: 'expo',
+        })
       }
     )
   )
