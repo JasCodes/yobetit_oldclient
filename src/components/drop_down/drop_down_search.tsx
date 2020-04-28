@@ -1,6 +1,7 @@
-import React, { FunctionComponent } from 'react'
+import React, { useLayoutEffect, FunctionComponent, useRef } from 'react'
 import { css } from 'linaria'
 import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
+import { reaction } from 'mobx'
 
 interface DropDownSearchInputProp {}
 
@@ -21,12 +22,22 @@ const searchInput = css`
   outline: none;
   flex-grow: 1;
   margin: 0px 24px;
+  text-transform: capitalize;
 `
 export const DropDownSearch: FunctionComponent<DropDownSearchInputProp> = props => {
   const store = useDropDownStore()
+  const refInput = useRef<HTMLInputElement | undefined>()
+  useLayoutEffect(() =>
+    reaction(
+      () => store.open,
+      () => refInput.current?.focus()
+    )
+  )
+
   return (
     <div className={container}>
       <input
+        ref={refInput}
         placeholder="Search for your country..."
         className={searchInput}
         onInput={e => {

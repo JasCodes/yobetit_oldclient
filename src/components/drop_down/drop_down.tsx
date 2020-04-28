@@ -12,12 +12,13 @@ interface DropDownProp {}
 const container = css`
   display: flex;
   flex-direction: column;
+  width: 500px;
 `
 export const DropDown: SFC<DropDownProp> = props => {
-  return (
+  return useObserver(() => (
     <div className={container}>
       <DropDownBar />
       <DropDownPanel />
     </div>
-  )
+  ))
 }

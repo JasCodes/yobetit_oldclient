@@ -9,7 +9,8 @@ const Header: SFC<HeaderProp> = props => {
   return (
     <header
       style={{
-        background: `#975099`,
+        // background: `#975099`,
+        background: '#B91CBF',
         // marginBottom: `1.45rem`,
         width: `100vw`,
       }}

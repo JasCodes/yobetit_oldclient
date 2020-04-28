@@ -10,9 +10,11 @@ interface DropDownBarTrailProp {
 
 const arr = css`
   margin: 0px 20px;
-  fill: #975099;
+  /* fill: #975099; */
+  fill: #b91cbf;
   height: 16px;
   width: 16px;
+  transform: rotate(180deg);
 `
 export const DropDownBarTrail: SFC<DropDownBarTrailProp> = props => {
   let arrow

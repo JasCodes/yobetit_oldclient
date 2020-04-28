@@ -3,25 +3,26 @@ import { css } from 'linaria'
 
 interface DropDownFlagProp {
   srcFlag: string
+  className?: string
 }
 
 const container = css`
   width: 35px;
   height: 35px;
-  margin: 0px 20px;
   position: relative;
   border-radius: 50%;
   flex-shrink: 0;
   overflow: hidden;
 `
+
+const image = css`
+  height: 100%;
+  margin-left: -25%;
+`
 export const DropDownFlag: FunctionComponent<DropDownFlagProp> = props => {
   return (
-    <div className={container}>
-      <img
-        style={{ height: '100%', marginLeft: '-25%' }}
-        src={props.srcFlag}
-        alt=""
-      />
+    <div className={`${container} ${props.className}`}>
+      <img className={image} src={props.srcFlag} alt="" />
     </div>
   )
 }
