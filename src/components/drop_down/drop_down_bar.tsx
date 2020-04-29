@@ -39,7 +39,6 @@ const DropDownBar: SFC<DropDownBarProp> = props => {
         ? '0 0 1px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0.2)'
         : '0 0 0px #b91cbf, 4px 4px 8px rgba(0, 0, 0, 0)',
     })
-    console.log('hi')
   }, [store.open])
   // useEffect(
   //   () => reaction(() => store.open),

@@ -1,5 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { css } from 'linaria'
+import gsap from 'gsap'
 
 interface DropDownFlagProp {
   srcFlag: string
@@ -13,16 +14,29 @@ const container = css`
   border-radius: 50%;
   flex-shrink: 0;
   overflow: hidden;
+  opacity: 0;
 `
 
 const image = css`
   height: 100%;
-  margin-left: -25%;
+  width: 100%;
+  object-fit: cover;
 `
 export const DropDownFlag: FunctionComponent<DropDownFlagProp> = props => {
   return (
     <div className={`${container} ${props.className}`}>
-      <img className={image} src={props.srcFlag} alt="" />
+      <img
+        className={image}
+        src={props.srcFlag}
+        alt=""
+        onLoad={e => {
+          gsap.to(e.currentTarget.parentElement, {
+            duration: 2,
+            opacity: 1,
+            ease: 'expo',
+          })
+        }}
+      />
     </div>
   )
 }

@@ -12,18 +12,18 @@ import Scrollbars from 'react-custom-scrollbars'
 import { autorun, reaction } from 'mobx'
 import { useWindowSize } from '@/hooks/use-window-size'
 
-const container = css`
+const background = css`
   background: #fde5fe;
   display: flex;
   min-height: 100vh;
   width: 100vw;
-  /* position: absolute; */
 `
 
 const dropDown = css`
   /* margin: auto auto; */
   /* padding-top: 60px; */
   margin: 0px auto;
+  opacity: 0;
 `
 const getTop = (open: boolean, height: number) => {
   const innerHeight = height - 70
@@ -59,7 +59,6 @@ const DropDownContainer = () => {
   useEffect(() => {
     gsap.fromTo(
       refDropDown.current,
-
       {
         opacity: 0,
         'margin-top': getTop(store.open, size.height) - 40,
@@ -75,7 +74,15 @@ const DropDownContainer = () => {
   }, [])
 
   return (
-    <div className={container}>
+    <div
+      className={background}
+      onClick={e => {
+        const input = document.getElementsByClassName('downdown-input')[0] as
+          | undefined
+          | HTMLInputElement
+        input?.focus({ preventScroll: true })
+      }}
+    >
       <div ref={refDropDown} className={dropDown}>
         <DropDown />
       </div>

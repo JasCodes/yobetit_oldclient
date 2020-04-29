@@ -1,9 +1,10 @@
 import { observable, action, reaction, toJS, autorun } from 'mobx'
 import axios from 'axios'
 import { Search, AllSubstringsIndexStrategy } from 'js-search'
-// import axiosRetry from 'axios-retry'
+import axiosRetry from 'axios-retry'
+import gsap from 'gsap'
 
-// axiosRetry(axios, { retries: Infinity })
+axiosRetry(axios, { retries: Infinity })
 
 export interface CountryProp {
   name: string
@@ -47,7 +48,7 @@ export class DropDownModel {
   // error = false
 
   @observable
-  mode: 'SERVER' | 'CLIENT' = 'CLIENT'
+  mode: 'CLIENT' | 'SERVER' | 'DIRECT' = 'DIRECT'
 
   @observable
   list: CountryProp[]
@@ -56,19 +57,45 @@ export class DropDownModel {
   filteredList: CountryProp[]
 
   @action
-  queryCountries = async (searchText: string) => {
+  queryDirect = async (searchText: string) => {
     this.fetching = true
-    const { data } = await axios.get<CountryProp[]>(
-      searchText === ''
-        ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;'
-        : `https://restcountries.eu/rest/v2/name/${searchText}?fields=;name;flag;`
-    )
-    this.filteredList = data
-    this.fetching = false
+    try {
+      const { data, status } = await axios.get<CountryProp[]>(
+        searchText === ''
+          ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;alpha3Code;'
+          : `https://restcountries.eu/rest/v2/name/${searchText}?fields=;name;flag;alpha3Code;`,
+        { validateStatus: false }
+      )
+      // console.log(data, status)
+      this.filteredList = status === 200 ? data : []
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.fetching = false
+    }
   }
 
   @action
-  queryOnce = async () => {
+  queryServer = async (searchText: string) => {
+    this.fetching = true
+    try {
+      const { data, status } = await axios.get<CountryProp[]>(
+        searchText === ''
+          ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;alpha3Code;'
+          : `https://restcountries.eu/rest/v2/name/${searchText}?fields=;name;flag;alpha3Code;`,
+        { validateStatus: false }
+      )
+      // console.log(data, status)
+      this.filteredList = status === 200 ? data : []
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.fetching = false
+    }
+  }
+
+  @action
+  queryDirectOnce = async () => {
     this.fetching = true
     const { data } = await axios.get<CountryProp[]>(
       'https://restcountries.eu/rest/v2/all?fields=;flag;name;altSpellings;alpha3Code;demonym;capital;region;'
@@ -101,7 +128,7 @@ export class DropDownModel {
     // this.searchEngine.addIndex('regionalBlocs')
     this.searchEngine.addIndex('region')
     // this.searchEngine.addIndex('subregion')
-    this.queryOnce().then(() => {
+    this.queryDirectOnce().then(() => {
       this.searchEngine.addDocuments(toJS(this.list))
       this.clientFilter()
     })
@@ -116,7 +143,7 @@ export class DropDownModel {
       if (this.mode === 'CLIENT') {
         this.clientFilter(this.searchText)
       } else {
-        this.queryCountries(this.searchText)
+        this.queryDirect(this.searchText)
       }
     })
   }

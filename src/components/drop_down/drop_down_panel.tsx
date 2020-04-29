@@ -52,7 +52,11 @@ export const DropDownPanel: FunctionComponent<DropDownPanelProp> = props => {
 
   return (
     <div className={panel} ref={refPanel}>
-      <ShadowScrollbars autoHeightMax={480} autoHeight>
+      <ShadowScrollbars
+        className="dropdown_scroll"
+        autoHeightMax={480}
+        autoHeight
+      >
         <DropDownSearch />
         <DropDownList />
         <div style={{ height: 25 }} />
