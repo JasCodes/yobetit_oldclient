@@ -17,6 +17,7 @@
     // "project": "tsconfig.json"
   },
   "plugins": [
+    "unused-imports",
     "import",
     "react",
     "@typescript-eslint",
@@ -41,6 +42,9 @@
         "tsx": "never"
       }
     ],
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports-ts": "error",
+    "unused-imports/no-unused-vars-ts": "warn",
     "no-undef": "error",
     "prettier/prettier": "error",
     "no-restricted-syntax": "off",

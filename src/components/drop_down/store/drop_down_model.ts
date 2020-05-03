@@ -48,7 +48,7 @@ export class DropDownModel {
   // error = false
 
   @observable
-  mode: 'CLIENT' | 'SERVER' | 'DIRECT' = 'DIRECT'
+  mode: 'CLIENT' | 'SERVER' | 'DIRECT' = 'SERVER'
 
   @observable
   list: CountryProp[]
@@ -81,8 +81,8 @@ export class DropDownModel {
     try {
       const { data, status } = await axios.get<CountryProp[]>(
         searchText === ''
-          ? 'https://restcountries.eu/rest/v2/all?fields=;name;flag;alpha3Code;'
-          : `https://restcountries.eu/rest/v2/name/${searchText}?fields=;name;flag;alpha3Code;`,
+          ? 'https://yobetit-service.herokuapp.com/countries?fields=name/all?fields=;name;flag;alpha3Code;'
+          : `https://yobetit-service.herokuapp.com/countries?query=${searchText}&fields=name/all?fields=;name;flag;alpha3Code;`,
         { validateStatus: false }
       )
       // console.log(data, status)
@@ -105,8 +105,10 @@ export class DropDownModel {
   }
 
   @action
-  clientFilter = (sText: string) => {
-    this.filteredList = sText ? this.searchEngine.search(sText) : this.list
+  clientFilter = (searchText: string) => {
+    this.filteredList = searchText
+      ? this.searchEngine.search(searchText)
+      : this.list
   }
 
   searchEngine: Search
@@ -140,11 +142,24 @@ export class DropDownModel {
 
     // observe and update filtered list each time I update
     autorun(() => {
-      if (this.mode === 'CLIENT') {
-        this.clientFilter(this.searchText)
-      } else {
-        this.queryDirect(this.searchText)
+      this.open
+      switch (this.mode) {
+        case 'CLIENT':
+          this.clientFilter(this.searchText)
+          break
+        case 'DIRECT':
+          this.queryDirect(this.searchText)
+          break
+        case 'SERVER':
+          this.queryServer(this.searchText)
+          break
+        default:
+          this.queryDirect(this.searchText)
       }
+      // if (this.mode === 'CLIENT') {
+      // } else {
+      //   this.queryDirect(this.searchText)
+      // }
     })
   }
 }

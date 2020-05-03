@@ -1,14 +1,17 @@
-import React, { FunctionComponent, useEffect, useRef } from 'react'
+import React, { FunctionComponent, useEffect } from 'react'
 import { DropDownSearch } from '@/components/drop_down/drop_down_search'
 import { DropDownList } from '@/components/drop_down/drop_down_list'
 import { css } from 'linaria'
 import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
-import gsap from 'gsap'
-import { useObserver, Observer } from 'mobx-react-lite'
+
 import ShadowScrollbars from '@/components/shadow_scrollbar'
-import { reaction } from 'mobx'
+import { autorun } from 'mobx'
+import gsap from 'gsap'
 
 interface DropDownPanelProp {}
+
+const PANEL_HEIGHT = 500
+const BLUR_HEIGHT = 25
 
 const panel = css`
   height: 0px;
@@ -34,27 +37,43 @@ const botBlur = css`
     rgba(255, 255, 255, 1) 76%
   );
 `
-export const DropDownPanel: FunctionComponent<DropDownPanelProp> = props => {
+export const DropDownPanel: FunctionComponent<DropDownPanelProp> = () => {
   const store = useDropDownStore()
-  const refPanel = useRef<HTMLDivElement>()
-  useEffect(() =>
-    reaction(
-      () => store.open,
-      () => {
-        gsap.to(refPanel.current, {
-          height: store.open ? 480 : 0,
+  useEffect(
+    () =>
+      autorun(() => {
+        const isBlurDot = store.filteredList?.length >= 10
+        const adjust =
+          store.filteredList?.length === 0 ? BLUR_HEIGHT - 10 : BLUR_HEIGHT
+
+        gsap.to(`.${botBlur}`, {
+          opacity: isBlurDot ? 1 : 0,
+          duration: 0.2,
+          ease: 'expo',
+        })
+
+        const scrollBarHeight =
+          document.getElementsByClassName('dropdown_scroll')[0].clientHeight ||
+          PANEL_HEIGHT
+
+        const adHeight = isBlurDot ? PANEL_HEIGHT : scrollBarHeight - adjust
+
+        const height = store.open ? adHeight || PANEL_HEIGHT : 0
+
+        gsap.to(`.${panel}`, {
+          height,
           duration: 1,
           ease: 'expo',
         })
-      }
-    )
+      }),
+    []
   )
 
   return (
-    <div className={panel} ref={refPanel}>
+    <div className={panel}>
       <ShadowScrollbars
         className="dropdown_scroll"
-        autoHeightMax={480}
+        autoHeightMax={PANEL_HEIGHT}
         autoHeight
       >
         <DropDownSearch />
@@ -65,4 +84,3 @@ export const DropDownPanel: FunctionComponent<DropDownPanelProp> = props => {
     </div>
   )
 }
-// <div>{store.open.toString()}</div>

@@ -16,12 +16,12 @@ module.exports = {
       },
     },
     'gatsby-plugin-tsconfig-paths',
-    'gatsby-plugin-linaria',
     {
       resolve: 'gatsby-plugin-transition-link',
       options: {
         layout: require.resolve(`./src/layout/layout.tsx`),
       },
     },
+    'gatsby-plugin-linaria',
   ],
 }

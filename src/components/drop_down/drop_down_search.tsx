@@ -1,18 +1,19 @@
-import React, { useLayoutEffect, FunctionComponent, useRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 import { css } from 'linaria'
 import { useDropDownStore } from '@/components/drop_down/store/drop_down_store'
-import { reaction } from 'mobx'
+import { autorun } from 'mobx'
 import { gsap } from 'gsap'
 import { useObserver } from 'mobx-react-lite'
 
 interface DropDownSearchInputProp {}
 
-const container = css`
+const dropDownSearch = css`
   display: flex;
   height: 70px;
-  margin: 20px 20px 10px 20px;
+  margin: 25px 20px 15px 20px;
   background: #fff;
-  border: 2px solid #f3f3f3;
+  box-shadow: 0px 0px 0px 2px #f3f3f3;
+  /* border: 2px solid #f3f3f3; */
   border-radius: 7px;
   outline: none;
 `
@@ -26,52 +27,72 @@ const searchInput = css`
   margin: 0px 24px;
   text-transform: capitalize;
 `
-export const DropDownSearch: FunctionComponent<DropDownSearchInputProp> = props => {
+export const DropDownSearch: FunctionComponent<DropDownSearchInputProp> = () => {
   const store = useDropDownStore()
   const refInput = useRef<HTMLInputElement | undefined>()
-  useLayoutEffect(() =>
-    reaction(
-      () => store.open,
-      () => refInput.current?.focus()
-    )
-  )
+  // useLayoutEffect(
+  //   () =>
+  //     reaction(
+  //       () => store.open,
+  //       () => refInput.current?.focus()
+  //     ),
+  //   []
+  // )
+
+  useLayoutEffect(() => {
+    autorun(() => {
+      const t = `.${dropDownSearch}`
+      if (store.open) {
+        refInput.current?.focus()
+        gsap.to(t, { opacity: 1, delay: 0.6 })
+      } else {
+        gsap.to(t, { opacity: 0 })
+      }
+    })
+    autorun(() => {
+      const t = `.${dropDownSearch}`
+      // const borderColor = store.fetching ? '#1cbfb4' : '#f3f3f3'
+      const boxShadow = store.fetching
+        ? '0px 0px 4px 4px #f3f3f3'
+        : '0px 0px 0px 2px #f3f3f3'
+      gsap.to(t, { boxShadow, ease: 'expo' })
+    })
+  }, [])
 
   return useObserver(() => (
-    <div className={container}>
+    <div className={dropDownSearch}>
       <input
         ref={refInput}
         placeholder="Search for your country..."
         className={`downdown-input ${searchInput}`}
-        value={store.searchText}
         onKeyDown={e => {
-          const keycode = e.keyCode
-          if (keycode === 46 || keycode === 8) {
-            store.searchText = store.searchText.slice(0, -1)
-            return
+          if (e.keyCode === 13) {
+            if (store.filteredList.length > 0 && store.open) {
+              const [first] = store.filteredList
+              store.selected = first
+              store.open = false
+            } else {
+              store.open = true
+            }
           }
-          const valid =
-            (keycode > 47 && keycode < 58) || // number keys
-            keycode === 32 ||
-            keycode === 13 || // spacebar & return key(s) (if you want to allow carriage returns)
-            (keycode > 64 && keycode < 91) || // letter keys
-            (keycode > 95 && keycode < 112) || // numpad keys
-            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
-            (keycode > 218 && keycode < 223) // [\]' (in order)
-          if (valid) store.searchText += e.key
+          // space
+          else if (e.keyCode === 32) {
+            if (!store.open || store.searchText === '') {
+              e.preventDefault()
+              store.open = true
+            }
+          }
         }}
-        onBeforeInput={e => {
-          e.preventDefault()
+        onChange={e => {
+          store.searchText = e.currentTarget.value
           const scroll = document.getElementsByClassName('dropdown_scroll')[0]
             ?.firstElementChild
           gsap.fromTo(
             scroll,
             { scrollTop: scroll?.scrollTop },
-            { scrollTop: 0, delay: 0.4 }
+            { scrollTop: 0, delay: 0, duration: 0.3 }
           )
         }}
-        // onInput={e => {
-        //   store.searchText = e.currentTarget.value
-        // }}
       />
     </div>
   ))
